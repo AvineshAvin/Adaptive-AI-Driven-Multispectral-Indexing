@@ -1,0 +1,232 @@
+{
+  "benchmark": {
+    "num_queries_evaluated": 100,
+    "metrics": {
+      "flat": {
+        "precision_at_1": 0.74,
+        "precision_at_5": 0.688,
+        "precision_at_10": 0.647,
+        "mAP": 0.7501,
+        "avg_search_time_ms": 0.121,
+        "avg_candidates_evaluated": 1500.0,
+        "search_space_reduction_pct": 0.0,
+        "speedup_factor": 1.0
+      },
+      "inverted": {
+        "precision_at_1": 0.74,
+        "precision_at_5": 0.69,
+        "precision_at_10": 0.645,
+        "mAP": 0.7544,
+        "avg_search_time_ms": 0.132,
+        "avg_candidates_evaluated": 337.0,
+        "search_space_reduction_pct": 77.53,
+        "speedup_factor": 0.91
+      },
+      "adaptive": {
+        "precision_at_1": 0.64,
+        "precision_at_5": 0.548,
+        "precision_at_10": 0.492,
+        "mAP": 0.6655,
+        "avg_search_time_ms": 0.315,
+        "avg_candidates_evaluated": 180.0,
+        "search_space_reduction_pct": 88.0,
+        "speedup_factor": 0.38
+      }
+    },
+    "tier_distribution": {
+      "HOT": 180,
+      "WARM": 570,
+      "COLD": 750,
+      "TOTAL": 1500
+    }
+  },
+  "ablation": {
+    "num_queries": 30,
+    "ablations": [
+      {
+        "experiment_id": "full_proposed",
+        "name": "Full Adaptive Framework (Proposed)",
+        "precision_at_1": 0.7333,
+        "precision_at_10": 0.4533,
+        "mAP": 0.6802,
+        "avg_search_time_ms": 0.312,
+        "search_space_reduction_pct": 88.0
+      },
+      {
+        "experiment_id": "spectral_only",
+        "name": "Spectral Branch Only (alpha=1.0)",
+        "precision_at_1": 0.7667,
+        "precision_at_10": 0.4967,
+        "mAP": 0.7477,
+        "avg_search_time_ms": 0.297,
+        "search_space_reduction_pct": 88.0
+      },
+      {
+        "experiment_id": "spatial_only",
+        "name": "Spatial Branch Only (alpha=0.0)",
+        "precision_at_1": 0.5333,
+        "precision_at_10": 0.3867,
+        "mAP": 0.5833,
+        "avg_search_time_ms": 0.371,
+        "search_space_reduction_pct": 88.0
+      },
+      {
+        "experiment_id": "no_confidence_gating",
+        "name": "Without Confidence Early-Stopping",
+        "precision_at_1": 0.8,
+        "precision_at_10": 0.6033,
+        "mAP": 0.7463,
+        "avg_search_time_ms": 0.122,
+        "search_space_reduction_pct": 0.0
+      }
+    ]
+  },
+  "simulation": {
+    "scenario": "disaster_monitoring",
+    "queries_executed": 80,
+    "rebalance_events": 5,
+    "initial_tiers": {
+      "HOT": 180,
+      "WARM": 570,
+      "COLD": 750,
+      "TOTAL": 1500
+    },
+    "final_tiers": {
+      "HOT": 7,
+      "WARM": 471,
+      "COLD": 1022,
+      "TOTAL": 1500
+    },
+    "tier_progression": [
+      {
+        "HOT": 180,
+        "WARM": 570,
+        "COLD": 750,
+        "TOTAL": 1500
+      },
+      {
+        "HOT": 5,
+        "WARM": 459,
+        "COLD": 1036,
+        "TOTAL": 1500
+      },
+      {
+        "HOT": 5,
+        "WARM": 464,
+        "COLD": 1031,
+        "TOTAL": 1500
+      },
+      {
+        "HOT": 5,
+        "WARM": 467,
+        "COLD": 1028,
+        "TOTAL": 1500
+      },
+      {
+        "HOT": 5,
+        "WARM": 470,
+        "COLD": 1025,
+        "TOTAL": 1500
+      },
+      {
+        "HOT": 7,
+        "WARM": 471,
+        "COLD": 1022,
+        "TOTAL": 1500
+      }
+    ],
+    "hot_class_distribution": {
+      "Forest": 5,
+      "SeaLake": 2
+    },
+    "reorganization_steps": [
+      {
+        "step": 15,
+        "query_id": "Forest_1092",
+        "query_class": "Forest",
+        "promotions": 1,
+        "demotions": 462,
+        "tier_counts": {
+          "HOT": 5,
+          "WARM": 459,
+          "COLD": 1036,
+          "TOTAL": 1500
+        },
+        "sample_promoted": []
+      },
+      {
+        "step": 30,
+        "query_id": "Forest_1067",
+        "query_class": "Forest",
+        "promotions": 5,
+        "demotions": 0,
+        "tier_counts": {
+          "HOT": 5,
+          "WARM": 464,
+          "COLD": 1031,
+          "TOTAL": 1500
+        },
+        "sample_promoted": [
+          "Forest_1008",
+          "Forest_1067",
+          "PermanentCrop_1006"
+        ]
+      },
+      {
+        "step": 45,
+        "query_id": "Forest_1006",
+        "query_class": "Forest",
+        "promotions": 6,
+        "demotions": 3,
+        "tier_counts": {
+          "HOT": 5,
+          "WARM": 467,
+          "COLD": 1028,
+          "TOTAL": 1500
+        },
+        "sample_promoted": [
+          "Forest_1006",
+          "Forest_113",
+          "River_1109"
+        ]
+      },
+      {
+        "step": 60,
+        "query_id": "River_1097",
+        "query_class": "River",
+        "promotions": 5,
+        "demotions": 2,
+        "tier_counts": {
+          "HOT": 5,
+          "WARM": 470,
+          "COLD": 1025,
+          "TOTAL": 1500
+        },
+        "sample_promoted": [
+          "HerbaceousVegetation_1106",
+          "PermanentCrop_1099",
+          "River_1073"
+        ]
+      },
+      {
+        "step": 75,
+        "query_id": "River_1041",
+        "query_class": "River",
+        "promotions": 6,
+        "demotions": 1,
+        "tier_counts": {
+          "HOT": 7,
+          "WARM": 471,
+          "COLD": 1022,
+          "TOTAL": 1500
+        },
+        "sample_promoted": [
+          "River_1041",
+          "River_112",
+          "Bombay_000051"
+        ]
+      }
+    ]
+  },
+  "timestamp": 1791038610.6262047
+}

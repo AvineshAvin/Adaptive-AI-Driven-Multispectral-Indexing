@@ -1,0 +1,77 @@
+/* Custom styles for Adaptive Multispectral Retrieval Dashboard */
+/* Color Palette: Modern Lavender, Deep Purple, Pure White */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-purple: #7c3aed;
+  --primary-purple-light: #8b5cf6;
+  --primary-lavender: #f5f3ff;
+  --bg-page: #f8f7fd;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #f8f7fd;
+  color: #1e1b4b;
+}
+
+code, pre, .font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Scrollbar customization matching light-purple theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1edfb;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c4b5fd;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a78bfa;
+}
+
+/* Nav Tab Pill Button (matches the black capsule "Dashboard" in the reference image) */
+.nav-tab {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 9999px;
+}
+
+.nav-tab.active-tab {
+  background-color: #18181b;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(24, 24, 27, 0.15);
+}
+
+.nav-tab.active-tab i {
+  color: #a78bfa !important;
+}
+
+/* Candidate Card hover transition */
+.candidate-card {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #ffffff;
+  border: 1px solid #ede9fe;
+  box-shadow: 0 2px 8px -2px rgba(124, 58, 237, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.candidate-card:hover {
+  transform: translateY(-3px);
+  border-color: #8b5cf6;
+  box-shadow: 0 12px 28px -4px rgba(124, 58, 237, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+}
+
+/* Soft card container */
+.soft-card {
+  background: #ffffff;
+  border: 1px solid #ede9fe;
+  box-shadow: 0 4px 20px -4px rgba(124, 58, 237, 0.05), 0 1px 4px rgba(0, 0, 0, 0.02);
+}

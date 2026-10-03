@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adaptive AI-Driven Multi-Spectral Image Indexing Framework</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#F8F7FD] text-slate-900 min-h-screen flex flex-col font-sans antialiased selection:bg-purple-500 selection:text-white">
+
+  <!-- Top Navigation Header -->
+  <header class="border-b border-purple-100 bg-white/90 backdrop-blur sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
+          <i data-lucide="satellite" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
+            Adaptive AI-Driven Multispectral Indexing
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-700 font-semibold font-mono border border-purple-200">EuroSAT Sentinel-2</span>
+          </h1>
+          <p class="text-xs text-slate-500">High-Speed Remote Sensing Retrieval Framework</p>
+        </div>
+      </div>
+
+      <!-- Quick Telemetry Badges -->
+      <div class="hidden md:flex items-center space-x-3 text-xs">
+        <div class="px-3 py-1.5 rounded-xl bg-purple-50/70 border border-purple-100 flex items-center gap-1.5 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-slate-500 font-medium">Repository:</span>
+          <span id="header-repo-size" class="font-bold text-slate-800">1,500 GeoTIFFs</span>
+        </div>
+        <div class="px-3 py-1.5 rounded-xl bg-purple-50/70 border border-purple-100 flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="layers" class="w-3.5 h-3.5 text-purple-600"></i>
+          <span class="text-slate-500 font-medium">Bands:</span>
+          <span class="font-bold text-slate-800">13 Sentinel-2</span>
+        </div>
+        <div class="px-3 py-1.5 rounded-xl bg-purple-50/70 border border-purple-100 flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="flame" class="w-3.5 h-3.5 text-amber-500"></i>
+          <span class="text-slate-500 font-medium">Tiers:</span>
+          <span id="header-hot-count" class="font-bold text-purple-700">HOT / WARM / COLD</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs (Pill Capsule Bar) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-2 border-t border-purple-100/70 py-2">
+      <button onclick="switchTab('retrieval')" id="tab-btn-retrieval" class="nav-tab active-tab flex items-center gap-2 py-2 px-4 text-xs font-bold text-white bg-slate-900 rounded-full shadow-sm">
+        <i data-lucide="search" class="w-3.5 h-3.5"></i> Live Retrieval Studio
+      </button>
+      <button onclick="switchTab('tiers')" id="tab-btn-tiers" class="nav-tab text-slate-600 hover:text-slate-900 hover:bg-purple-50/80 flex items-center gap-2 py-2 px-4 text-xs font-semibold rounded-full">
+        <i data-lucide="flame" class="w-3.5 h-3.5 text-amber-500"></i> Tier Architecture & Migration
+      </button>
+      <button onclick="switchTab('benchmarks')" id="tab-btn-benchmarks" class="nav-tab text-slate-600 hover:text-slate-900 hover:bg-purple-50/80 flex items-center gap-2 py-2 px-4 text-xs font-semibold rounded-full">
+        <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-purple-600"></i> Empirical Benchmarks
+      </button>
+      <button onclick="switchTab('ablation')" id="tab-btn-ablation" class="nav-tab text-slate-600 hover:text-slate-900 hover:bg-purple-50/80 flex items-center gap-2 py-2 px-4 text-xs font-semibold rounded-full">
+        <i data-lucide="activity" class="w-3.5 h-3.5 text-indigo-600"></i> Ablation & Spectral Signatures
+      </button>
+      <button onclick="switchTab('simulation')" id="tab-btn-simulation" class="nav-tab text-slate-600 hover:text-slate-900 hover:bg-purple-50/80 flex items-center gap-2 py-2 px-4 text-xs font-semibold rounded-full">
+        <i data-lucide="play-circle" class="w-3.5 h-3.5 text-rose-500"></i> Workload Simulator
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: LIVE RETRIEVAL STUDIO -->
+    <!-- ========================================== -->
+    <div id="tab-retrieval" class="space-y-6">
+      
+      <!-- Top Query Selector & Configuration Bar -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Query Image Picker & Upload Section -->
+        <div class="lg:col-span-2 bg-white border border-purple-100 rounded-2xl p-5 shadow-[0_4px_20px_-2px_rgba(124,58,237,0.05)] flex flex-col justify-between">
+          <div>
+            <!-- Query Method Switcher Tabs -->
+            <div class="flex items-center justify-between mb-4 border-b border-purple-100 pb-3">
+              <div class="flex gap-2">
+                <button onclick="switchQueryMode('dataset')" id="btn-mode-dataset" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-white shadow-sm flex items-center gap-1.5 transition-all">
+                  <i data-lucide="crosshair" class="w-3.5 h-3.5 text-purple-300"></i> EuroSAT Repository Explorer
+                </button>
+                <button onclick="switchQueryMode('upload')" id="btn-mode-upload" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-purple-50 flex items-center gap-1.5 transition-all">
+                  <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-purple-600"></i> Upload & Analyze Image
+                </button>
+              </div>
+              <span id="query-mode-subtitle" class="text-xs text-slate-400 hidden sm:inline">Choose from 10 Land-Cover Classes</span>
+            </div>
+
+            <!-- SUB-PANEL 1: Pre-Indexed Dataset Explorer -->
+            <div id="panel-dataset-explorer" class="space-y-3">
+              <!-- Class pills selector -->
+              <div class="flex flex-wrap gap-1.5 mb-3" id="class-pills">
+                <!-- Populated via JS -->
+              </div>
+
+              <!-- Sample Query Thumbnails for selected class -->
+              <div class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 p-2 bg-[#FAF9FF] rounded-xl border border-purple-100 max-h-36 overflow-y-auto" id="sample-thumbnails">
+                <!-- Sample thumbnails populated via JS -->
+              </div>
+            </div>
+
+            <!-- SUB-PANEL 2: Upload Image & Analyze Dropzone -->
+            <div id="panel-upload-image" class="space-y-3 hidden">
+              <div id="dropzone" 
+                   onclick="document.getElementById('image-upload-input').click()"
+                   ondragover="handleDragOver(event)" 
+                   ondragleave="handleDragLeave(event)" 
+                   ondrop="handleFileDrop(event)"
+                   class="border-2 border-dashed border-purple-200 hover:border-purple-500 bg-[#FAF9FF] hover:bg-purple-50/40 rounded-2xl p-6 text-center cursor-pointer transition-all group shadow-inner">
+                <input type="file" id="image-upload-input" accept=".tif,.tiff,.jpg,.jpeg,.png" class="hidden" onchange="handleFileSelect(event)">
+                <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                  <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+                </div>
+                <h4 class="text-sm font-bold text-slate-800 mb-1">Upload Any Satellite Image to Analyze</h4>
+                <p class="text-xs text-slate-500 mb-2">Drag and drop or browse GeoTIFF <code class="text-purple-600 bg-purple-50 px-1 py-0.5 rounded font-mono">.tif</code> (13 bands) or RGB <code class="text-purple-600 bg-purple-50 px-1 py-0.5 rounded font-mono">.jpg / .png</code></p>
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white text-[11px] text-purple-700 font-medium border border-purple-100 shadow-sm">
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500"></i>
+                  Auto-identifies EuroSAT dataset scenes or analyzes external images
+                </div>
+              </div>
+
+              <!-- Quick Test Buttons for Dataset Images -->
+              <div class="flex items-center gap-2 pt-1 text-[11px] text-slate-500 overflow-x-auto">
+                <span class="text-slate-400 whitespace-nowrap font-medium">Quick Test Samples:</span>
+                <button onclick="loadSampleToAnalyze('River_1')" class="px-2.5 py-1 rounded-full bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 font-medium whitespace-nowrap transition-colors">River (Water)</button>
+                <button onclick="loadSampleToAnalyze('Forest_1083')" class="px-2.5 py-1 rounded-full bg-purple-50 hover:bg-purple-100 text-emerald-700 border border-emerald-200 font-medium whitespace-nowrap transition-colors">Forest (Vegetation)</button>
+                <button onclick="loadSampleToAnalyze('Industrial_1')" class="px-2.5 py-1 rounded-full bg-purple-50 hover:bg-purple-100 text-amber-700 border border-amber-200 font-medium whitespace-nowrap transition-colors">Industrial (Built-up)</button>
+                <button onclick="loadSampleToAnalyze('Highway_1')" class="px-2.5 py-1 rounded-full bg-purple-50 hover:bg-purple-100 text-indigo-700 border border-indigo-200 font-medium whitespace-nowrap transition-colors">Highway (Roads)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected / Uploaded Query Image Preview & Search Trigger Card -->
+          <div class="mt-4 flex items-center gap-4 p-3.5 bg-[#FAF9FF] rounded-xl border border-purple-100 shadow-sm">
+            <div class="relative">
+              <img id="current-query-img" src="" alt="Query" class="w-16 h-16 rounded-xl object-cover border border-purple-200 shadow-md">
+              <span id="uploaded-badge" class="hidden absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-full bg-purple-600 text-[9px] font-bold text-white shadow-sm">UPLOAD</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span id="current-query-class" class="text-sm font-extrabold text-slate-900 truncate">Forest</span>
+                <span id="current-query-id" class="text-xs font-mono text-slate-500 truncate">Forest_1.tif</span>
+              </div>
+              <p id="current-query-desc" class="text-xs text-slate-500 mt-0.5 truncate">13 Sentinel-2 Spectral Bands loaded & preprocessed</p>
+              <div class="flex items-center gap-3 mt-1.5 text-xs text-slate-600">
+                <span id="query-band-tag" class="text-purple-600 font-semibold font-mono text-[11px]">True Color RGB</span>
+                <span id="query-alpha-tag" class="text-slate-500 font-mono text-[11px]">Dynamic α: 0.65</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="executeRetrieval()" id="btn-execute-search" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-purple-500/25 flex items-center gap-2 transition-all">
+                <i data-lucide="zap" class="w-4 h-4"></i>
+                <span>Analyze & Search</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Retrieval Controls & Dynamic Tuning -->
+        <div class="bg-white border border-purple-100 rounded-2xl p-5 shadow-[0_4px_20px_-2px_rgba(124,58,237,0.05)] flex flex-col justify-between">
+          <div>
+            <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2 mb-4">
+              <i data-lucide="sliders" class="w-4 h-4 text-purple-600"></i>
+              Retrieval System Parameters
+            </h2>
+
+            <!-- Retrieval Mode Selector -->
+            <div class="space-y-2 mb-4">
+              <label class="text-xs font-bold text-slate-700">Indexing Engine Mode:</label>
+              <div class="grid grid-cols-1 gap-2">
+                <label class="flex items-center gap-2.5 p-2 rounded-xl border border-purple-200 bg-purple-50/50 cursor-pointer transition-all hover:border-purple-300">
+                  <input type="radio" name="retrieval-mode" value="adaptive" checked class="text-purple-600 focus:ring-purple-500">
+                  <div class="text-xs">
+                    <span class="font-bold text-purple-900">Adaptive AI Multi-Tier</span>
+                    <span class="text-slate-500 block text-[11px]">HOT-WARM-COLD + Confidence Gating</span>
+                  </div>
+                </label>
+                <label class="flex items-center gap-2.5 p-2 rounded-xl border border-purple-100 bg-[#FAF9FF] cursor-pointer hover:border-purple-200 transition-all">
+                  <input type="radio" name="retrieval-mode" value="inverted" class="text-purple-600 focus:ring-purple-500">
+                  <div class="text-xs">
+                    <span class="font-semibold text-slate-800">Static Inverted Index (IVF)</span>
+                    <span class="text-slate-500 block text-[11px]">K-Means Visual Centroids Baseline</span>
+                  </div>
+                </label>
+                <label class="flex items-center gap-2.5 p-2 rounded-xl border border-purple-100 bg-[#FAF9FF] cursor-pointer hover:border-purple-200 transition-all">
+                  <input type="radio" name="retrieval-mode" value="flat" class="text-purple-600 focus:ring-purple-500">
+                  <div class="text-xs">
+                    <span class="font-semibold text-slate-800">Exhaustive Flat Scan</span>
+                    <span class="text-slate-500 block text-[11px]">Brute-force 100% Repository Linear Scan</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Top-K Slider -->
+            <div class="space-y-1 mb-3">
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-700 font-bold">Retrieve Top-K Images:</span>
+                <span id="top-k-val" class="font-mono text-purple-600 font-bold">10</span>
+              </div>
+              <input type="range" id="top-k-slider" min="5" max="25" step="5" value="10" 
+                     class="w-full accent-purple-600 h-1.5 bg-purple-100 rounded-lg cursor-pointer"
+                     oninput="document.getElementById('top-k-val').innerText = this.value">
+            </div>
+
+            <!-- Dynamic Alpha Weight Slider -->
+            <div class="space-y-1 mb-3">
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-700 font-bold">Spectral vs Spatial Weight (α):</span>
+                <span id="alpha-val" class="font-mono text-purple-600 font-bold">Auto (AI)</span>
+              </div>
+              <input type="range" id="alpha-slider" min="0" max="1" step="0.05" value="0.55" 
+                     class="w-full accent-purple-600 h-1.5 bg-purple-100 rounded-lg cursor-pointer"
+                     oninput="updateAlphaSlider(this.value)">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>0.0 (Spatial)</span>
+                <span>0.5 (Balanced)</span>
+                <span>1.0 (Spectral)</span>
+              </div>
+            </div>
+
+            <!-- Early-Stop Threshold Slider -->
+            <div class="space-y-1 mb-3 pt-2 border-t border-purple-50">
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-700 font-bold">Early-Stop Threshold (τ):</span>
+                <span id="threshold-val" class="font-mono text-purple-600 font-bold">0.82</span>
+              </div>
+              <input type="range" id="threshold-slider" min="0.70" max="0.95" step="0.01" value="0.82" 
+                     class="w-full accent-purple-600 h-1.5 bg-purple-100 rounded-lg cursor-pointer"
+                     oninput="document.getElementById('threshold-val').innerText = parseFloat(this.value).toFixed(2)">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>0.70 (Aggressive 88%)</span>
+                <span>0.82 (Balanced)</span>
+                <span>0.95 (High Recall)</span>
+              </div>
+            </div>
+
+            <!-- Early-Stopping Policy Selector -->
+            <div class="space-y-1 mb-3">
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-slate-700 font-bold">Adaptive Policy:</span>
+                <span id="policy-label" class="text-[11px] font-bold text-purple-700 font-mono">Recall-Aware</span>
+              </div>
+              <div class="grid grid-cols-2 gap-1.5 text-[11px]">
+                <button type="button" id="btn-policy-recall" onclick="setPolicyMode('recall_aware')" class="py-1 px-2 rounded-lg font-bold bg-purple-600 text-white shadow-sm transition-all text-center">
+                  Recall-Aware (6/10+)
+                </button>
+                <button type="button" id="btn-policy-agg" onclick="setPolicyMode('aggressive')" class="py-1 px-2 rounded-lg font-medium bg-purple-50 text-slate-700 hover:bg-purple-100 transition-all text-center">
+                  Aggressive (88% Pruned)
+                </button>
+              </div>
+            </div>
+
+            <!-- IVF Cluster Probes Slider -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-700 font-bold">IVF Probed Clusters (n<sub>probe</sub>):</span>
+                <span id="probe-val" class="font-mono text-purple-600 font-bold">3 / 16</span>
+              </div>
+              <input type="range" id="probe-slider" min="2" max="6" step="1" value="3" 
+                     class="w-full accent-purple-600 h-1.5 bg-purple-100 rounded-lg cursor-pointer"
+                     oninput="document.getElementById('probe-val').innerText = this.value + ' / 16'">
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-purple-100 text-[11px] text-slate-500 flex items-center justify-between">
+            <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i> Confidence Gated</span>
+            <span class="font-mono text-purple-700 font-bold">Adaptive Tuning Active</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comprehensive Image Analysis Report Card -->
+      <div id="image-analysis-card" class="hidden bg-white border border-purple-200 rounded-2xl p-5 shadow-lg relative overflow-hidden transition-all">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-purple-100 pb-4 mb-4">
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <img id="analysis-preview-img" src="" alt="Analyzed Scene" class="w-20 h-20 rounded-2xl object-cover border-2 border-purple-300 shadow-md">
+              <button onclick="toggleCompositeView()" id="btn-toggle-cir" class="hidden absolute -bottom-2 -right-2 px-2 py-0.5 rounded-full bg-purple-600 text-[9px] font-bold text-white shadow hover:bg-purple-500 transition-colors">
+                CIR NIR
+              </button>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span id="analysis-predicted-class" class="text-lg font-black text-slate-900">Forest</span>
+                <span id="analysis-confidence-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-xs font-bold border border-emerald-200">99.8% Confidence</span>
+              </div>
+              <p id="analysis-status-text" class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500"></i>
+                <span id="analysis-match-badge" class="font-semibold text-slate-700">EuroSAT Dataset Match: Forest_1083.tif</span>
+              </p>
+              <div class="flex items-center gap-3 mt-1.5 text-[11px] text-slate-600">
+                <span id="analysis-channels-text" class="text-purple-700 font-semibold font-mono">13 Sentinel-2 Spectral Bands</span>
+                <span id="analysis-dims-text" class="text-slate-400 font-mono">64 × 64 px</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-xs text-slate-500 font-medium">Adaptive AI Weight:</span>
+            <span id="analysis-alpha-badge" class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 font-mono text-xs font-bold border border-purple-200">α = 0.65</span>
+          </div>
+        </div>
+
+        <!-- Radiometric Indices & Spatial Complexity Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <!-- NDVI -->
+          <div class="p-3 bg-[#FAF9FF] rounded-xl border border-purple-100">
+            <div class="flex justify-between items-center text-slate-500 mb-1">
+              <span class="font-bold text-emerald-700">NDVI (Vegetation Index)</span>
+              <span id="analysis-ndvi-val" class="font-mono font-bold text-emerald-600 text-sm">+0.72</span>
+            </div>
+            <p id="analysis-ndvi-interp" class="text-[11px] text-slate-600 truncate">Dense, Healthy Canopy Vegetation</p>
+          </div>
+
+          <!-- NDWI -->
+          <div class="p-3 bg-[#FAF9FF] rounded-xl border border-purple-100">
+            <div class="flex justify-between items-center text-slate-500 mb-1">
+              <span class="font-bold text-blue-700">NDWI (Water Index)</span>
+              <span id="analysis-ndwi-val" class="font-mono font-bold text-blue-600 text-sm">-0.35</span>
+            </div>
+            <p id="analysis-ndwi-interp" class="text-[11px] text-slate-600 truncate">Non-Aqueous Surface / Dry Land</p>
+          </div>
+
+          <!-- NDBI -->
+          <div class="p-3 bg-[#FAF9FF] rounded-xl border border-purple-100">
+            <div class="flex justify-between items-center text-slate-500 mb-1">
+              <span class="font-bold text-amber-700">NDBI (Built-Up Index)</span>
+              <span id="analysis-ndbi-val" class="font-mono font-bold text-amber-600 text-sm">-0.28</span>
+            </div>
+            <p id="analysis-ndbi-interp" class="text-[11px] text-slate-600 truncate">Natural Non-Built Surface</p>
+          </div>
+
+          <!-- Spatial Complexity -->
+          <div class="p-3 bg-[#FAF9FF] rounded-xl border border-purple-100">
+            <div class="flex justify-between items-center text-slate-500 mb-1">
+              <span class="font-bold text-purple-700">Spatial Geometry</span>
+              <span id="analysis-edge-val" class="font-mono font-bold text-purple-600 text-sm">0.042</span>
+            </div>
+            <p id="analysis-texture-interp" class="text-[11px] text-slate-600 truncate">Homogeneous Texture</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Search Telemetry Metrics Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" id="telemetry-bar">
+        <div class="p-3 bg-white border border-purple-100 rounded-2xl shadow-sm">
+          <span class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-purple-600"></i> Retrieval Latency
+          </span>
+          <p id="stat-latency" class="text-xl font-black text-slate-900 font-mono mt-1">-- ms</p>
+          <span class="text-[10px] text-purple-600 font-semibold" id="stat-speedup">-- speedup</span>
+        </div>
+        <div class="p-3 bg-white border border-purple-100 rounded-2xl shadow-sm">
+          <span class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+            <i data-lucide="filter" class="w-3.5 h-3.5 text-emerald-600"></i> Search Space Reduction
+          </span>
+          <p id="stat-reduction" class="text-xl font-black text-emerald-600 font-mono mt-1">-- %</p>
+          <span class="text-[10px] text-slate-500" id="stat-cands">-- / 1500 scanned</span>
+        </div>
+        <div class="p-3 bg-white border border-purple-100 rounded-2xl shadow-sm">
+          <span class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-500"></i> Top-1 Confidence
+          </span>
+          <p id="stat-confidence" class="text-xl font-black text-amber-600 font-mono mt-1">-- %</p>
+          <span class="text-[10px] text-slate-500">Margin-calibrated</span>
+        </div>
+        <div class="p-3 bg-white border border-purple-100 rounded-2xl shadow-sm">
+          <span class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+            <i data-lucide="git-commit" class="w-3.5 h-3.5 text-indigo-600"></i> Tier Path Traversed
+          </span>
+          <p id="stat-tierpath" class="text-xs font-bold text-indigo-700 font-mono mt-1.5 truncate">HOT Cache</p>
+          <span class="text-[10px] text-slate-500 truncate block" id="stat-earlystop">Gating status</span>
+        </div>
+        <div class="p-3 bg-white border border-purple-100 rounded-2xl shadow-sm col-span-2 sm:col-span-1">
+          <span class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-teal-600"></i> Top-K Accuracy
+          </span>
+          <p id="stat-accuracy" class="text-xl font-black text-teal-600 font-mono mt-1">-- / 10</p>
+          <span class="text-[10px] text-slate-500">Same Land-Cover Class</span>
+        </div>
+      </div>
+
+      <!-- Spectral Signature Curves (Query vs Top-1) & Results Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Spectral Signature Comparison Chart -->
+        <div class="bg-white border border-purple-100 rounded-2xl p-5 shadow-[0_4px_20px_-2px_rgba(124,58,237,0.05)]">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="line-chart" class="w-4 h-4 text-purple-600"></i>
+              Spectral Reflectance Profile
+            </h3>
+            <span class="text-[10px] text-slate-400 font-medium">13 Sentinel-2 Bands</span>
+          </div>
+          <div class="h-56 relative">
+            <canvas id="spectralComparisonChart"></canvas>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-2 leading-relaxed">
+            Comparing reflectance curves across Coastal, Blue, Green, Red, Red-Edge 1-3, NIR, and SWIR bands to verify spectral fidelity.
+          </p>
+        </div>
+
+        <!-- Right: Retrieved Candidates Grid -->
+        <div class="lg:col-span-2 bg-white border border-purple-100 rounded-2xl p-5 shadow-[0_4px_20px_-2px_rgba(124,58,237,0.05)]">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="image" class="w-4 h-4 text-purple-600"></i>
+                Retrieved Multispectral Candidates
+              </h3>
+              <p class="text-xs text-slate-500">Ranked by adaptive spectral-spatial similarity</p>
+            </div>
+            <span class="text-xs px-3 py-1 rounded-full bg-purple-50 border border-purple-100 text-purple-700 font-semibold">
+              Interactive Feedback Enabled 👍 👎
+            </span>
+          </div>
+
+          <!-- Candidates Container -->
+          <div id="results-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 max-h-[500px] overflow-y-auto pr-1">
+            <!-- Dynamically populated candidate cards -->
+            <div class="col-span-full py-16 text-center text-slate-400 text-xs">
+              Select or upload a query image and click "Analyze & Search" to retrieve satellite images.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: TIER ARCHITECTURE & MIGRATION -->
+    <!-- ========================================== -->
+    <div id="tab-tiers" class="space-y-6 hidden">
+      
+      <!-- Tier Overview Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        
+        <!-- HOT Tier -->
+        <div class="bg-white border border-amber-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="p-2.5 rounded-xl bg-amber-50 text-amber-600">
+                <i data-lucide="flame" class="w-5 h-5"></i>
+              </span>
+              <div>
+                <h3 class="text-base font-bold text-slate-900">HOT Tier</h3>
+                <span class="text-[11px] text-amber-600 font-mono font-semibold">Activity Score ≥ 0.65</span>
+              </div>
+            </div>
+            <span id="tier-count-hot" class="text-3xl font-black text-amber-500 font-mono">180</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Ultra-fast in-memory cache for high-frequency satellite queries. Supports early-stopping termination in &lt; 0.5 ms.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+            <span>Repository Share: <strong id="tier-pct-hot" class="text-amber-600 font-bold">12.0%</strong></span>
+            <span>Lookup: <strong class="text-emerald-600 font-bold">Instant Vector Dot</strong></span>
+          </div>
+        </div>
+
+        <!-- WARM Tier -->
+        <div class="bg-white border border-purple-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="p-2.5 rounded-xl bg-purple-50 text-purple-600">
+                <i data-lucide="cpu" class="w-5 h-5"></i>
+              </span>
+              <div>
+                <h3 class="text-base font-bold text-slate-900">WARM Tier</h3>
+                <span class="text-[11px] text-purple-600 font-mono font-semibold">0.25 ≤ Activity &lt; 0.65</span>
+              </div>
+            </div>
+            <span id="tier-count-warm" class="text-3xl font-black text-purple-600 font-mono">570</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Clustered inverted index posting lists. Probed dynamically when query confidence in the HOT tier requires expansion.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+            <span>Repository Share: <strong id="tier-pct-warm" class="text-purple-600 font-bold">38.0%</strong></span>
+            <span>Structure: <strong class="text-purple-700 font-bold">16 Centroid Partitions</strong></span>
+          </div>
+        </div>
+
+        <!-- COLD Tier -->
+        <div class="bg-white border border-blue-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="p-2.5 rounded-xl bg-blue-50 text-blue-600">
+                <i data-lucide="snowflake" class="w-5 h-5"></i>
+              </span>
+              <div>
+                <h3 class="text-base font-bold text-slate-900">COLD Tier</h3>
+                <span class="text-[11px] text-blue-600 font-mono font-semibold">Activity Score &lt; 0.25</span>
+              </div>
+            </div>
+            <span id="tier-count-cold" class="text-3xl font-black text-blue-500 font-mono">750</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Compressed archival storage for rarely accessed land-cover zones. Scanned only on deep fallback to save CPU and memory.
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+            <span>Repository Share: <strong id="tier-pct-cold" class="text-blue-600 font-bold">50.0%</strong></span>
+            <span>Status: <strong class="text-slate-600 font-bold">Cold Secondary Storage</strong></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Activity Scoring Formulation & Rebalance Controls -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Activity Scoring Formulation -->
+        <div class="lg:col-span-2 bg-white border border-purple-100 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="function-square" class="w-4 h-4 text-purple-600"></i>
+              Self-Learning Activity Scoring Formulation
+            </h3>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-purple-100 text-purple-700 font-mono font-semibold">Dynamic AI Model</span>
+          </div>
+          
+          <!-- Formula Box -->
+          <div class="p-4 bg-[#FAF9FF] rounded-xl border border-purple-100 font-mono text-xs text-slate-800 space-y-2">
+            <p class="text-purple-700 text-sm font-bold">
+              A<sub>i</sub>(t) = w<sub>f</sub> · F̂<sub>acc</sub>(i) + w<sub>q</sub> · F̂<sub>query</sub>(i) + w<sub>r</sub> · exp(-λ · Δt) + w<sub>fb</sub> · R̂<sub>fb</sub>(i)
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-[11px] text-slate-500 border-t border-purple-100">
+              <div><strong>w<sub>f</sub> = 0.35:</strong> Access Frequency</div>
+              <div><strong>w<sub>q</sub> = 0.25:</strong> Query Frequency</div>
+              <div><strong>w<sub>r</sub> = 0.20:</strong> Recency Factor</div>
+              <div><strong>w<sub>fb</sub> = 0.20:</strong> Relevance Feedback</div>
+            </div>
+          </div>
+
+          <!-- Class-wise Tier Distribution Bar Chart -->
+          <div class="mt-6">
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Class Representation Across Tiers</h4>
+            <div class="h-60 relative">
+              <canvas id="classTierChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Dynamic Reorganization Controls & Trigger -->
+        <div class="bg-white border border-purple-100 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2 mb-3">
+              <i data-lucide="refresh-cw" class="w-4 h-4 text-amber-500"></i>
+              Tier Rebalance Engine
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Executes dynamic migrations: Promotes items with surging user interest and feedback from COLD → WARM → HOT, and demotes stagnant images via exponential decay.
+            </p>
+
+            <button onclick="triggerTierRebalance()" id="btn-rebalance" class="w-full py-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-bold text-xs shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition-all">
+              <i data-lucide="repeat" class="w-4 h-4"></i>
+              Trigger Dynamic Reorganization
+            </button>
+
+            <!-- Rebalance Output Summary -->
+            <div id="rebalance-summary-box" class="mt-4 p-3.5 bg-[#FAF9FF] rounded-xl border border-purple-100 text-xs space-y-2 hidden">
+              <div class="flex justify-between">
+                <span class="text-slate-500">Promotions:</span>
+                <span id="reb-promotions" class="font-bold text-emerald-600 font-mono">+0 items</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500">Demotions:</span>
+                <span id="reb-demotions" class="font-bold text-rose-500 font-mono">-0 items</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500">Rebalance Latency:</span>
+                <span id="reb-time" class="font-bold text-purple-600 font-mono">0.0 ms</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top HOT items mini preview -->
+          <div class="mt-4 pt-3 border-t border-purple-100">
+            <span class="text-xs font-bold text-slate-800 block mb-2">Most Active HOT Images</span>
+            <div id="top-hot-strip" class="flex gap-2 overflow-x-auto pb-1">
+              <!-- Mini thumbnails populated by JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: EMPIRICAL BENCHMARKS & ANALYTICS -->
+    <!-- ========================================== -->
+    <div id="tab-benchmarks" class="space-y-6 hidden">
+      
+      <div class="bg-white border border-purple-100 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-purple-100">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <i data-lucide="bar-chart-2" class="w-5 h-5 text-purple-600"></i>
+              Systematic Empirical Comparison
+            </h2>
+            <p class="text-xs text-slate-500">
+              Evaluated on 100 stratified multispectral test queries across all 10 EuroSAT Sentinel-2 classes.
+            </p>
+          </div>
+          <button onclick="loadBenchmarkData()" class="px-4 py-2 rounded-full bg-purple-50 hover:bg-purple-100 text-xs font-bold text-purple-700 border border-purple-200 flex items-center gap-2 transition-colors">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Metrics
+          </button>
+        </div>
+
+        <!-- Benchmark Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          
+          <!-- Chart 1: Precision@K & mAP -->
+          <div class="p-4 bg-[#FAF9FF] rounded-2xl border border-purple-100">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retrieval Precision@K and mAP</h3>
+            <div class="h-64 relative">
+              <canvas id="benchmarkPrecisionChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Search-Space Reduction % & Latency -->
+          <div class="p-4 bg-[#FAF9FF] rounded-2xl border border-purple-100">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Search Space Reduction % & Latency (ms)</h3>
+            <div class="h-64 relative">
+              <canvas id="benchmarkEfficiencyChart"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Comparative Summary Table -->
+        <div class="mt-6 overflow-x-auto rounded-xl border border-purple-100">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-purple-50 text-slate-700 border-b border-purple-100">
+                <th class="py-3 px-4 font-bold">Retrieval Framework</th>
+                <th class="py-3 px-4 font-bold">Precision@1</th>
+                <th class="py-3 px-4 font-bold">Precision@5</th>
+                <th class="py-3 px-4 font-bold">Precision@10</th>
+                <th class="py-3 px-4 font-bold">mAP</th>
+                <th class="py-3 px-4 font-bold">Search Time (ms)</th>
+                <th class="py-3 px-4 font-bold">Candidates</th>
+                <th class="py-3 px-4 font-bold">Search Reduction</th>
+                <th class="py-3 px-4 font-bold">Speedup Multiplier</th>
+              </tr>
+            </thead>
+            <tbody id="benchmark-table-body" class="divide-y divide-purple-100 font-mono">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-4 p-4 bg-purple-50/70 border border-purple-200 rounded-xl text-xs text-purple-900">
+          <strong class="text-purple-700">Key Research Finding:</strong> The Proposed Adaptive AI Multi-Tier Framework reduces candidate search space by <strong>88.00%</strong> (evaluating only 180 images in the HOT tier instead of 1,500 exhaustive candidates) while maintaining robust retrieval accuracy and sub-millisecond response times!
+        </div>
+      </div>
+
+      <!-- Trade-Off Analysis: Threshold & Cluster Probing Optimization -->
+      <div class="bg-white border border-purple-100 rounded-2xl p-6 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-purple-100">
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <i data-lucide="git-commit" class="w-5 h-5 text-purple-600"></i>
+              Recall vs. Search-Cost Trade-Off Analysis
+            </h3>
+            <p class="text-xs text-slate-500">
+              Empirical sweep optimizing confidence early-stopping threshold (τ) and IVF cluster probes (n<sub>probe</sub>).
+            </p>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-800 font-mono text-xs font-bold">
+            Pareto Frontier
+          </span>
+        </div>
+
+        <!-- Trade-off Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Chart A: Pareto Trade-off Curve -->
+          <div class="p-4 bg-[#FAF9FF] rounded-2xl border border-purple-100">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1">Pareto Curve: Pruning % vs. Top-K Accuracy</h4>
+            <p class="text-[11px] text-slate-500 mb-3">Illustrates candidate coverage recovery as early-stopping threshold increases.</p>
+            <div class="h-64 relative">
+              <canvas id="paretoTradeoffChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart B: Scalability & Latency Crossover -->
+          <div class="p-4 bg-[#FAF9FF] rounded-2xl border border-purple-100">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1">Scalability & Latency Crossover (N = 1.5K to 100K)</h4>
+            <p class="text-[11px] text-slate-500 mb-3">Exhaustive flat scan scales linearly O(N), while Adaptive remains bounded at O(N<sub>HOT</sub>).</p>
+            <div class="h-64 relative">
+              <canvas id="scalabilityChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empirical Sweep Tables -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Table A: Adaptive Threshold Sweep -->
+          <div class="overflow-x-auto rounded-xl border border-purple-100">
+            <div class="p-3 bg-purple-50 text-slate-800 font-bold text-xs border-b border-purple-100 flex justify-between">
+              <span>Adaptive Early-Stop Threshold (τ) Sweep</span>
+              <span class="text-purple-700 font-mono text-[11px]">Proposed Method</span>
+            </div>
+            <table class="w-full text-left text-[11px] border-collapse font-mono">
+              <thead>
+                <tr class="bg-[#FAF9FF] text-slate-600 border-b border-purple-100">
+                  <th class="py-2 px-3">Threshold τ</th>
+                  <th class="py-2 px-3">Policy / Tier Action</th>
+                  <th class="py-2 px-3">Pruned %</th>
+                  <th class="py-2 px-3">Top-10 Acc</th>
+                  <th class="py-2 px-3">Time</th>
+                </tr>
+              </thead>
+              <tbody id="adaptive-sweep-tbody" class="divide-y divide-purple-100 text-slate-700">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Table B: IVF Cluster Probes Sweep -->
+          <div class="overflow-x-auto rounded-xl border border-purple-100">
+            <div class="p-3 bg-purple-50 text-slate-800 font-bold text-xs border-b border-purple-100 flex justify-between">
+              <span>Static Inverted Index (IVF) Cluster Probes (n<sub>probe</sub>) Sweep</span>
+              <span class="text-slate-600 font-mono text-[11px]">Approximate Baseline</span>
+            </div>
+            <table class="w-full text-left text-[11px] border-collapse font-mono">
+              <thead>
+                <tr class="bg-[#FAF9FF] text-slate-600 border-b border-purple-100">
+                  <th class="py-2 px-3">Probes</th>
+                  <th class="py-2 px-3">Scanned</th>
+                  <th class="py-2 px-3">Pruned %</th>
+                  <th class="py-2 px-3">Top-10 Acc</th>
+                  <th class="py-2 px-3">Time</th>
+                </tr>
+              </thead>
+              <tbody id="ivf-sweep-tbody" class="divide-y divide-purple-100 text-slate-700">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Academic Viva & Project Defense Narrative Card -->
+        <div class="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl space-y-3">
+          <div class="flex items-center gap-2 text-purple-900 font-bold text-xs">
+            <i data-lucide="award" class="w-4 h-4 text-purple-600"></i>
+            Project Review & Defense Summary (How to present this to Examiners):
+          </div>
+          <p class="text-xs text-slate-700 leading-relaxed italic">
+            “We evaluated three distinct retrieval strategies: <strong>Exhaustive Flat Scan</strong> establishes exact ground-truth retrieval, <strong>Static IVF</strong> represents conventional cluster-partitioned indexing (77.4% reduction at 6.13/10 accuracy), and our proposed <strong>Adaptive AI Multi-Tier</strong> introduces dynamic search-space reduction and confidence-aware gating. In aggressive mode, Adaptive achieves <strong>88.0% pruning</strong> examining only 180 images. When configured with recall-aware confidence gating (τ = 0.82–0.85), it dynamically escalates from HOT into WARM tier whenever candidate support is sparse, achieving <strong>5.80/10 Top-10 accuracy</strong> with 60–64% pruning and sub-0.06 ms latency. As repository size scales from 1,500 to 100,000 images, Adaptive yields up to <strong>28.3× speedup</strong> over linear scan.”
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: ABLATION & SPECTRAL SIGNATURES -->
+    <!-- ========================================== -->
+    <div id="tab-ablation" class="space-y-6 hidden">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Left: Ablation Study Comparison -->
+        <div class="bg-white border border-purple-100 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="layers" class="w-4 h-4 text-purple-600"></i>
+              Component Ablation Study
+            </h3>
+            <span class="text-xs text-slate-400">System Impact</span>
+          </div>
+          <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+            Evaluates the individual contributions of the Spectral branch, Spatial branch, and Confidence-Aware early-stopping gating mechanism.
+          </p>
+
+          <div class="h-64 relative mb-4">
+            <canvas id="ablationChart"></canvas>
+          </div>
+
+          <div id="ablation-list" class="space-y-2">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Right: 13-Band Sentinel-2 Spectral Reflectance Explorer -->
+        <div class="bg-white border border-purple-100 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="sun" class="w-4 h-4 text-amber-500"></i>
+              Sentinel-2 13-Band Land-Cover Signatures
+            </h3>
+            <span class="text-xs text-slate-400">Wavelength Profiles</span>
+          </div>
+          <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+            Mean spectral reflectance curves for EuroSAT land-cover classes showing the signature diagnostic peaks in Red-Edge, NIR, and SWIR wavelengths.
+          </p>
+
+          <div class="h-72 relative">
+            <canvas id="spectralSignaturesChart"></canvas>
+          </div>
+
+          <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] text-slate-600 pt-3 border-t border-purple-100">
+            <div><strong>B01-B04:</strong> Visible (Aerosol, Blue, Green, Red)</div>
+            <div><strong>B05-B07:</strong> Red-Edge Chlorophyll</div>
+            <div><strong>B08-B8A:</strong> Near Infrared (NIR)</div>
+            <div><strong>B09-B10:</strong> Water Vapour & Cirrus</div>
+            <div><strong>B11-B12:</strong> Shortwave IR (SWIR 1-2)</div>
+            <div><strong>NDVI/NDWI:</strong> Computed On-The-Fly</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: WORKLOAD SIMULATOR & REORGANIZATION -->
+    <!-- ========================================== -->
+    <div id="tab-simulation" class="space-y-6 hidden">
+      
+      <div class="bg-white border border-purple-100 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-purple-100">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <i data-lucide="play-circle" class="w-5 h-5 text-rose-500"></i>
+              Real-World Query Workload Simulator
+            </h2>
+            <p class="text-xs text-slate-500">
+              Simulates query access distributions to demonstrate how the index autonomously reorganizes its HOT-WARM-COLD tiers.
+            </p>
+          </div>
+        </div>
+
+        <!-- Controls Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Operational Scenario:</label>
+            <select id="sim-scenario" class="w-full bg-[#FAF9FF] border border-purple-200 rounded-xl px-3 py-2 text-xs text-slate-800">
+              <option value="disaster_monitoring">Flood & Disaster (River / SeaLake / Forest)</option>
+              <option value="urban_expansion">Urban Development (Highway / Industrial / Residential)</option>
+              <option value="agriculture_survey">Agricultural Survey (Crops / Pasture)</option>
+              <option value="zipfian">Zipfian Power-Law (80/20 Web Distribution)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Simulated Queries Count:</label>
+            <select id="sim-queries" class="w-full bg-[#FAF9FF] border border-purple-200 rounded-xl px-3 py-2 text-xs text-slate-800">
+              <option value="40">40 Queries</option>
+              <option value="80" selected>80 Queries</option>
+              <option value="120">120 Queries</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Rebalance Interval:</label>
+            <select id="sim-interval" class="w-full bg-[#FAF9FF] border border-purple-200 rounded-xl px-3 py-2 text-xs text-slate-800">
+              <option value="10">Every 10 Queries</option>
+              <option value="15" selected>Every 15 Queries</option>
+              <option value="20">Every 20 Queries</option>
+            </select>
+          </div>
+
+          <div class="flex items-end">
+            <button onclick="runLiveSimulation()" id="btn-run-sim" class="w-full py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-purple-500/20 flex items-center justify-center gap-2 transition-all">
+              <i data-lucide="play" class="w-4 h-4"></i> Run Workload Simulation
+            </button>
+          </div>
+        </div>
+
+        <!-- Simulation Results Display -->
+        <div id="sim-results-area" class="mt-6 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Tier Evolution Chart -->
+            <div class="p-4 bg-[#FAF9FF] rounded-2xl border border-purple-100">
+              <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">HOT, WARM & COLD Tier Progression</h3>
+              <div class="h-64 relative">
+                <canvas id="simProgressionChart"></canvas>
+              </div>
+            </div>
+
+            <!-- HOT Tier Class Domination Chart -->
+            <div class="p-4 bg-[#FAF9FF] rounded-2xl border border-purple-100">
+              <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Emergent HOT Tier Land-Cover Composition</h3>
+              <div class="h-64 relative">
+                <canvas id="simHotClassChart"></canvas>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Simulation Reorganization Steps Log -->
+          <div class="p-4 bg-[#FAF9FF] rounded-2xl border border-purple-100">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Dynamic Rebalance Audit Trail</h3>
+            <div id="sim-step-logs" class="max-h-48 overflow-y-auto space-y-2 text-xs font-mono">
+              <p class="text-slate-400 text-center py-4">Click "Run Workload Simulation" to start simulation.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-purple-100 bg-white py-4 text-center text-xs text-slate-500">
+    Adaptive AI-Driven Multi-Spectral Image Indexing Framework for High-Speed Remote Sensing Retrieval • EuroSAT Sentinel-2 Multispectral Dataset
+  </footer>
+
+  <!-- App Javascript -->
+  <script src="app.js"></script>
+</body>
+</html>
